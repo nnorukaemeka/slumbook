@@ -18,8 +18,8 @@ AUTHORIZATION_SCOPE ='openid email profile'
 AUTH_REDIRECT_URI = "http://127.0.0.1:5000/google/auth"
 # BASE_URI = os.environ.get("FN_BASE_URI", default=False)
 BASE_URI = "http://127.0.0.1:5000/"
-# CLIENT_ID = os.environ.get("FN_CLIENT_ID", default=False)
-CLIENT_ID = "331292061459-335eds4gfjul3819gpkc7t80q5sdoaj9.apps.googleusercontent.com"
+CLIENT_ID = os.environ.get("CLIENT_ID", default=False)
+# CLIENT_ID = "331292061459-335eds4gfjul3819gpkc7t80q5sdoaj9.apps.googleusercontent.com"
 # CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
 CLIENT_SECRET = "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"
 
