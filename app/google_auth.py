@@ -71,7 +71,7 @@ def post_userInfo(user_info):
         r = requests.post(url=url, json=user_info)
         response = r.json()
         return response
-    except requests.Exception as e:
+    except Exception as e:
         return e
 
 @app.route('/google/login')
