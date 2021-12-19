@@ -18,13 +18,11 @@ AUTHORIZATION_SCOPE ='openid email profile'
 AUTH_REDIRECT_URI = "https://tellbook.herokuapp.com/google/auth"
 # BASE_URI = os.environ.get("FN_BASE_URI", default=False)
 BASE_URI = "https://tellbook.herokuapp.com/"
-# CLIENT_ID = os.environ.get("CLIENT_ID", default=False)
-CLIENT_ID = "331292061459-335eds4gfjul3819gpkc7t80q5sdoaj9.apps.googleusercontent.com"
-# CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
-CLIENT_SECRET = "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"
+CLIENT_ID = os.environ.get("CLIENT_ID", default=False)
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET", default=False)
 
-AUTH_TOKEN_KEY = 'auth_token'
-AUTH_STATE_KEY = 'auth_state'
+AUTH_TOKEN_KEY = os.environ.get("AUTH_TOKEN_KEY", default=False)
+AUTH_STATE_KEY = os.environ.get("AUTH_STATE_KEY", default=False)
 
 # app = flask.Blueprint('google_auth', __name__)
 
