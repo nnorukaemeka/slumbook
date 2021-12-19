@@ -15,9 +15,9 @@ AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=of
 AUTHORIZATION_SCOPE ='openid email profile'
 
 # AUTH_REDIRECT_URI = os.environ.get("FN_AUTH_REDIRECT_URI", default=False)
-AUTH_REDIRECT_URI = "http://127.0.0.1:5000/google/auth"
+AUTH_REDIRECT_URI = "https://tellbook.herokuapp.com/google/auth"
 # BASE_URI = os.environ.get("FN_BASE_URI", default=False)
-BASE_URI = "http://127.0.0.1:5000/"
+BASE_URI = "https://tellbook.herokuapp.com/"
 # CLIENT_ID = os.environ.get("CLIENT_ID", default=False)
 CLIENT_ID = "331292061459-335eds4gfjul3819gpkc7t80q5sdoaj9.apps.googleusercontent.com"
 # CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
