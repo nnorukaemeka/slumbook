@@ -267,7 +267,7 @@ def signin():
             message = "Invalid credentials."
             flash(message, "danger") #danger is a category
             return redirect(url_for("signin"))
-        elif check["activation_status"] != "1":
+        elif check.get("activation_status") != "1":
             #flash a message
             message = "Account not activated yet."
             flash(message, "danger") #danger is a category
@@ -284,7 +284,7 @@ def signin():
 
         # Login the user
         check.pop("password")
-        AUTH_TOKEN_KEY = 'auth_token'
+        AUTH_TOKEN_KEY = os.environ.get("AUTH_TOKEN_KEY", default=False)
         session.clear()
         session[AUTH_TOKEN_KEY] = True
         session["user_info"] = check
