@@ -65,7 +65,7 @@ def no_cache(view):
 
 def post_userInfo(user_info):
     try:
-        url = "http://127.0.0.1:5000/api/v1/users/gmail"
+        url = "https://tellbook.herokuapp.com/api/v1/users/gmail"
         r = requests.post(url=url, json=user_info)
         response = r.json()
         return response
