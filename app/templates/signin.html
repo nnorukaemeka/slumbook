@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block title %} {{ title }} {% endblock %}     
+
+
+{% block body %}
+
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="hero d-flex align-items-center contact">
+
+    <div class="container">
+
+      <div class="row gy-4">
+        <div class="col-lg-12">
+            <br><br>
+        </div>
+        <div class="col-lg-12">
+          <!-- ======= Flash ======= -->
+          {% include 'includes/_message.html' %}
+          <!-- End Flash -->
+        </div>
+        
+        <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
+          <!-- <img src="static/img/pricing-ultimate.png" class="img-fluid" height="20%" alt=""> -->
+          <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+          <div id="player"></div>
+      </div>
+
+        <div class="col-lg-6 d-flex flex-column justify-content-center">
+            <header class="section-header" style="text-align: left;">
+                <p>Login</p>
+              </header>
+            <!-- <p>Sign Up</p> -->
+            <form action="/signin" method="post" class="php-email-form">
+                <div class="row gy-4">
+  
+                  <div class="col-md-12">
+                    <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                  </div>
+  
+                  <div class="col-md-12">
+                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                  </div>
+  
+                  <div class="col-md-12 text-center">
+  
+                    <button type="submit">Login</button>
+                  </div>
+
+                  <div class="col-md-12 text-center">
+                    <p>
+                        Don't have account yet? <a href="/signup">Sign Up</a>
+                    </p>
+                  </div>
+  
+                </div>
+              </form>
+
+              <hr>
+
+              <div class='g-sign-in-button'>
+                <div class=content-wrapper>
+                    <div class='logo-wrapper'>
+                        <img src='https://developers.google.com/identity/images/g-logo.png'>
+                    </div>
+                    <span class='text-container'>
+                  <span><a href="/google/login">Sign in with Google</a></span>
+                </span>
+                </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+
+  </section><!-- End Hero -->
+  {% endblock %}
+
+
