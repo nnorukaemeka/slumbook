@@ -221,7 +221,7 @@ def signup():
             r = requests.post(url=url, data=payload, files=files)
             response = r.json()
             print("response ", response)
-        except requests.Exception as e:
+        except Exception as e:
             flash(e, "danger") #danger is a category
             return redirect(url_for("signup"))
 
@@ -318,7 +318,7 @@ def admin():
         url = "http://127.0.0.1:5000/api/v1/users"
         r = requests.get(url)
         response = r.json()
-    except requests.Exception as e:
+    except Exception as e:
         flash(e, "danger") #danger is a category
         return redirect(url_for("homepage"))
 
