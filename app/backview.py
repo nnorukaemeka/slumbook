@@ -117,7 +117,7 @@ class SlumbookUsers(Resource):
 
         #create activation string for Email activation
         activation_string = str(uuid.uuid4().hex)  # get a random string in a UUID fromat
-        activation_url = "http://127.0.0.1:5000/activateuser/{0}".format(activation_string)
+        activation_url = "https://tellbook.herokuapp.com/activateuser/{0}".format(activation_string)
         
         #upload image.
         print("starting image upload")
@@ -135,7 +135,7 @@ class SlumbookUsers(Resource):
                 return {"status":False, "message":message, "data": ""}, 400
             else:
                 image_name = image["name"]
-                image_path = 'http://127.0.0.1:5000/api/v1/users/uploads/' + image_name
+                image_path = 'https://tellbook.herokuapp.com/api/v1/users/uploads/' + image_name
             
         #POST new user details to slumbook database
         post = {"given_name":_fname, "family_name":_lname, "email":_email, "password":password_hash, "image_name":image_name, "picture":image_path, activation_string:"yes", "activation_string":activation_string, "activation_status":"0", "activation_set_time":stamp(), "signup_channel":"app", "signup_time":stamp()}

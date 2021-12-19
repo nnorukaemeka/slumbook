@@ -214,8 +214,8 @@ def signup():
             files = None
 
         try:
-            print("files to be uploadwd ", files)
-            url = "http://127.0.0.1:5000/api/v1/users"
+            print("files to be uploaded ", files)
+            url = "https://tellbook.herokuapp.com/api/v1/users"
             # r = requests.request(method="POST", url=url, json=payload)
             # response = json.loads(r.content)
             r = requests.post(url=url, data=payload, files=files)
@@ -315,7 +315,7 @@ def admin():
     
     #check database to see if email already exists.
     try:
-        url = "http://127.0.0.1:5000/api/v1/users"
+        url = "https://tellbook.herokuapp.com/api/v1/users"
         r = requests.get(url)
         response = r.json()
     except Exception as e:
