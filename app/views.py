@@ -372,3 +372,9 @@ def activateuser(token):
         flash(message, "success") #success is a category
         return redirect(url_for("signin"))
 
+
+
+#verify signin page
+@app.route("/verifysignin",  methods=["GET"])
+def verifysignin():
+    return render_template("newenglish.html")
