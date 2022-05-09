@@ -378,3 +378,43 @@ def activateuser(token):
 @app.route("/verifysignin",  methods=["GET"])
 def verifysignin():
     return render_template("newenglish.html")
+
+
+
+#Vehicle Renewal Registration page
+@app.route("/register", methods=["GET","POST"])
+def register():
+    if request.method == "POST":
+
+        payload = {
+            "phone_number" : request.form['phone_number'],
+            "plate_number" : request.form['plate_number'].upper(),
+            "vehicle_type" : str(request.form['vehicle_type']).upper()
+        }
+        headers = {
+                    'content-type': 'application/json',
+                    'x-access-token': "frsc@idl-5w731qmFdJ8h+8Xrd9PA!safX"
+                }
+        try:
+            url = "https://safe-payy.herokuapp.com/api/v1/vehiclerenewal/register"
+            # r = requests.request(method="POST", url=url, json=payload)
+            # response = json.loads(r.content)
+            r = requests.post(url=url, data=payload, headers=headers)
+            response = r.json()
+            print("response ", response)
+        except Exception as e:
+            flash(e, "danger") #danger is a category
+            return redirect(url_for("registervehicle"))
+
+
+        if response.get("status"):
+            message = response["message"]
+            flash(message, "success") #success is a category
+            return redirect(url_for("registervehicle"))
+
+        else:
+            message = response["message"]
+            flash(message, "danger") #danger is a category
+            return redirect(url_for("registervehicle"))
+    else:
+        return render_template("registervehicle.html")
