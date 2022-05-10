@@ -385,6 +385,7 @@ def verifysignin():
 @app.route("/register", methods=["GET","POST"])
 def register():
     if request.method == "POST":
+        print("I'm here")
 
         payload = {
             "phone_number" : request.form['phone_number'],
@@ -404,18 +405,18 @@ def register():
             print("response ", response)
         except Exception as e:
             flash(e, "danger") #danger is a category
-            return redirect(url_for("registervehicle"))
+            return redirect(url_for("register"))
 
 
         if response.get("status"):
             message = response["message"]
             flash(message, "success") #success is a category
-            return redirect(url_for("registervehicle"))
+            return redirect(url_for("register"))
 
         else:
             message = response["message"]
             flash(message, "danger") #danger is a category
-            return redirect(url_for("registervehicle"))
+            return redirect(url_for("register"))
     
     else:
-        return render_template("registervehicle.html", title="Register | safetech", player="player", videoId="_fei3yjsD3A", year=footer_year())
+        return render_template("registervehicle.html", title="Register | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
