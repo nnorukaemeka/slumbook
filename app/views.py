@@ -416,5 +416,6 @@ def register():
             message = response["message"]
             flash(message, "danger") #danger is a category
             return redirect(url_for("registervehicle"))
+    
     else:
-        return render_template("registervehicle.html")
+        return render_template("registervehicle.html", title="Register | safetech", player="player", videoId="_fei3yjsD3A", year=footer_year())
