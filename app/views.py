@@ -401,7 +401,7 @@ def register():
             url = "https://safe-payy.herokuapp.com/api/v1/vehiclerenewal/register"
             # r = requests.request(method="POST", url=url, json=payload)
             # response = json.loads(r.content)
-            r = requests.post(url=url, data=payload, headers=headers)
+            r = requests.post(url=url, json=payload, headers=headers)
             response = r.json()
             print(f"Response: {response}")
         except Exception as e:
