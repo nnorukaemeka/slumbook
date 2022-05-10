@@ -396,13 +396,14 @@ def register():
                     'content-type': 'application/json',
                     'x-access-token': "frsc@idl-5w731qmFdJ8h+8Xrd9PA!safX"
                 }
+        print(f"Payload: {payload}")
         try:
             url = "https://safe-payy.herokuapp.com/api/v1/vehiclerenewal/register"
             # r = requests.request(method="POST", url=url, json=payload)
             # response = json.loads(r.content)
             r = requests.post(url=url, data=payload, headers=headers)
             response = r.json()
-            print("response ", response)
+            print(f"Response: {response}")
         except Exception as e:
             flash(e, "danger") #danger is a category
             return redirect(url_for("register"))

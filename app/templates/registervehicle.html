@@ -1,72 +1,183 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %} {{ title }} {% endblock %}     
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %} {{ title }} {% endblock %} </title>
+  <meta content="" name="description">
+
+  <meta content="" name="keywords">
+  <meta name="google-signin-client_id" content="331292061459-335eds4gfjul3819gpkc7t80q5sdoaj9.apps.googleusercontent.com">
+
+  <!-- Favicons -->
+  <link href="static/img/favicon.png" rel="icon">
+  <link href="static/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/vendor/aos/aos.css" rel="stylesheet">
+  <link href="static/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="static/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="static/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: FlexStart - v1.4.0
+  * Template URL: https://bootstrapmade.com/flexstart-bootstrap-startup-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top">
+</header><!-- End Header -->
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" class="hero d-flex align-items-center contact">
+
+  <div class="container">
+
+    <div class="row gy-4">
+      <div class="col-lg-12">
+          <br><br>
+      </div>
+      <div class="col-lg-12">
+        <!-- ======= Flash ======= -->
+        {% include 'includes/_message.html' %}
+        <!-- End Flash -->
+      </div>
+      
+      <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
+          <!-- <img src="static/img/pricing-ultimate.png" class="img-fluid" height="20%" alt=""> -->
+          <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+        <div id="player"></div>
+      </div>
+
+      <div class="col-lg-6 d-flex flex-column justify-content-center">
+          <header class="section-header" style="text-align: left;">
+              <p>Register Your Vehicle</p>
+            </header>
+          <!-- <p>Sign Up</p> -->
+          <form action="/register" method="post" class="php-email-form" enctype=multipart/form-data>
+              <div class="row gy-4">
+
+                <div class="col-md-6">
+                  <input type="text" name="phone_number" class="form-control" placeholder="Phone number tie to vehicle" required>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" name="plate_number" class="form-control" placeholder="Vehicle Plate Number" required>
+                </div>
+
+                <div class="col-md-12">
+                  <select name="vehicle_type" class="form-control" required="">
+                      <option value="">Select vehicle type</option>
+                      <option value="TRUCK">Truck</option>
+                      <option value="CAR">Car/pickup</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6 text-center">
+                  <button type="submit">Sign up</button>
+                </div>
+                <div class="col-md-6 text-center">
+                  <img id="logoimg" src="static/img/frsc.png" width="100%" height="50" alt="">
+              </div>
+
+              </div>
+            </form>
+            
+      </div>
+
+    </div>
+  </div>
 
 
-{% block body %}
+</section><!-- End Hero -->
 
-
-  <!-- ======= Hero Section ======= -->
-  <section id="hero" class="hero d-flex align-items-center contact">
-
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
     <div class="container">
-
-      <div class="row gy-4">
-        <div class="col-lg-12">
-            <br><br>
-        </div>
-        <div class="col-lg-12">
-          <!-- ======= Flash ======= -->
-          {% include 'includes/_message.html' %}
-          <!-- End Flash -->
-        </div>
-        
-        <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
-            <!-- <img src="static/img/pricing-ultimate.png" class="img-fluid" height="20%" alt=""> -->
-            <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
-          <div id="player"></div>
-        </div>
-
-        <div class="col-lg-6 d-flex flex-column justify-content-center">
-            <header class="section-header" style="text-align: left;">
-                <p>Register Your Vehicle</p>
-              </header>
-            <!-- <p>Sign Up</p> -->
-            <form action="/register" method="post" class="php-email-form" enctype=multipart/form-data>
-                <div class="row gy-4">
-  
-                  <div class="col-md-6">
-                    <input type="text" name="phone_number" class="form-control" placeholder="Phone number tie to vehicle" required>
-                  </div>
-                  <div class="col-md-6">
-                    <input type="text" name="plate_number" class="form-control" placeholder="Vehicle Plate Number" required>
-                  </div>
-  
-                  <div class="col-md-12">
-                    <select name="vehicle_type" class="form-control" required="">
-                        <option value="">Select vehicle type</option>
-                        <option value="TRUCK">Truck</option>
-                        <option value="CAR">Car/pickup</option>
-                    </select>
-                  </div>
-
-                  <div class="col-md-6 text-center">
-                    <button type="submit">Sign up</button>
-                  </div>
-                  <div class="col-md-6 text-center">
-                    <img id="logoimg" src="static/img/frsc.png" width="100%" height="50" alt="">
-                </div>
-
-                </div>
-              </form>
-              
-        </div>
-
+      <div class="copyright">
+        &copy; {% block year %} {{ year }} {% endblock %} <strong><span> - Safe Technologies</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Designed by <a href="/#">SafeTech</a>
       </div>
     </div>
+  </footer><!-- End Footer -->
 
 
-  </section><!-- End Hero -->
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-  {% endblock %}
+  <!-- Vendor JS Files -->
+  <script>
+    // 2. This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // 3. This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('{{player}}', {
+        // height: '25%',
+        width: '100%',
+        videoId: '{{videoId}}',
+        playerVars: {
+          'playsinline': 1
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    // 4. The API will call this function when the video player is ready.
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
+
+    // 5. The API calls this function when the player's state changes.
+    //    The function indicates that when playing a video (state=1),
+    //    the player should play for six seconds and then stop.
+    var done = false;
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING && !done) {
+        setTimeout(stopVideo, 6000);
+        done = true;
+      }
+    }
+    function stopVideo() {
+      player.stopVideo();
+    }
+  </script>
+
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="static/vendor/aos/aos.js"></script>
+  <script src="static/vendor/php-email-form/validate.js"></script>
+  <script src="static/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="static/vendor/purecounter/purecounter.js"></script>
+  <script src="static/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="static/vendor/glightbox/js/glightbox.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="static/js/main.js"></script>
+
+</body>
+
+</html>
 
