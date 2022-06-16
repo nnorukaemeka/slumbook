@@ -463,7 +463,7 @@ def payref():
             red= requests.post(url=url)
             rese = red.json()
             if not rese["status"]:
-                message = response["message"]
+                message = rese["message"]
                 flash(message, "danger") #danger is a category
                 return redirect(url_for("payref"))
             else:
