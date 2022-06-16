@@ -467,12 +467,12 @@ def payref():
                 flash(message, "danger") #danger is a category
                 return redirect(url_for("payref"))
             else:
-               name= rese["data"]["name"]
+               name= rese["data"]["name"].title()
                enrolment_id = enrolment_id
-               payment_type = "Topup"
+               payment_type = "PLASCHEMA Topup"
         else:
-            name = ""
-            enrolment_id = ""
+            name = "None"
+            enrolment_id = "None"
             payment_type = "PLASCHEMA form"
         phone_number = request.form['phone_number']
         dura = request.form['duration']
@@ -498,9 +498,9 @@ def payref():
 
         if response.get("status"):
             message= f"From any bank, dial {response['data']} to pay for your subscription."
-            data ={'message':message,"paymentref":response['data'],'enrolment_id':enrolment_id, "name":name, 'phone_number':phone_number, 'payment_type':payment_type, 'duration':duration_name}
+            data ={'message':message,"paymentref":response['data'],'amount':amount,'enrolment_id':enrolment_id, "name":name, 'phone_number':phone_number, 'payment_type':payment_type, 'duration':duration_name}
             flash(message, "success") #success is a category
-            return render_template("success.html", title="success | safetech",data=data, player="player", videoId="0yyX7zshpvc", year=footer_year())
+            return render_template("payref_success.html", title="success | safetech",data=data, player="player", videoId="0yyX7zshpvc", year=footer_year())
 
         else:
             message = response["message"]
