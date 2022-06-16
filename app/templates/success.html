@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %} {{ title }} {% endblock %} </title>
+  <meta content="" name="description">
+
+  <meta content="" name="keywords">
+  <meta name="google-signin-client_id" content="331292061459-335eds4gfjul3819gpkc7t80q5sdoaj9.apps.googleusercontent.com">
+
+  <!-- Favicons -->
+  <link href="static/img/SafePAY_logo1.jpg" rel="icon">
+  <link href="static/img/SafePAY_logo1.jpg" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/vendor/aos/aos.css" rel="stylesheet">
+  <link href="static/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="static/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="static/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: FlexStart - v1.4.0
+  * Template URL: https://bootstrapmade.com/flexstart-bootstrap-startup-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+
+</head>
+
+<body>
+    <header id="header" class="header fixed-top">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+    
+          <a href="#" class="logo d-flex align-items-center">
+            <img src="static/img/SafePAY_logo1.jpg" class="img-fluid" height="20%" alt="">
+          </a>
+        </div>
+    </header><!-- End Header -->
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="hero d-flex align-items-center contact">
+
+    <div class="container">
+
+        <div class="row gy-4">
+        <div class="col-lg-12">
+            <br><br>
+        </div>
+        <div class="col-lg-12">
+            <!-- ======= Flash ======= -->
+            {% include 'includes/_message.html' %}
+            <!-- End Flash -->
+        </div>
+        
+        <div class="col-lg-12 d-flex flex-column justify-content-center">
+            <header class="section-header" style="text-align: left;">
+                <p>Generate Payment Reference for PLASCHEMA</p>
+                </header>
+            <!-- <p>Sign Up</p> -->
+            <div class="php-email-form">
+              <div class="row gy-4">
+
+                <table>
+                    <h2>{{ data.message }}</h2>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                  <tr>
+                    <td>Payment Reference</td>
+                    <td>{{ data.paymentref}}</td>
+                  </tr>
+                  <tr>
+                    <td>Enrolment ID</td>
+                    <td>{{ data.enrolment_id}}</td>
+                  </tr>
+                  <tr>
+                    <td>Name</td>
+                    <td>{{ data.name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Payment Type</td>
+                    <td>{{ data.payment_type}}</td>
+                  </tr>
+                  <tr>
+                    <td>Duration</td>
+                    <td>{{ data.duration}}</td>
+                  </tr>
+                    <td>Contact</td>
+                    <td>{{ data.phone_number}}</td>
+                  </tr>
+                </table>
+
+              </div>
+            </div>
+                
+        </div>
+
+        </div>
+    </div>
+
+    </section><!-- End Hero -->
+
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  
+
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="static/vendor/aos/aos.js"></script>
+  <script src="static/vendor/php-email-form/validate.js"></script>
+  <script src="static/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="static/vendor/purecounter/purecounter.js"></script>
+  <script src="static/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="static/vendor/glightbox/js/glightbox.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="static/js/main.js"></script>
+
+</body>
+
+</html>
+

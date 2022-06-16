@@ -421,3 +421,91 @@ def register():
     
     else:
         return render_template("registervehicle.html", title="Register | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
+
+
+def getDuration(numberOfMonths):
+    month = int(numberOfMonths)
+    get_year = month//12
+    get_month = month%12
+    if month==1:
+        duration = f"{month} month"
+    elif get_year == 0 and get_month !=0:
+        duration = f"{month} months"
+    elif get_year==1 and get_month==0:
+        duration = f"{get_year} year"
+    elif get_year>1 and get_month==0:
+        duration = f"{get_year} years"
+    elif get_year==1 and get_month!=0:
+        new_month = month-(12*get_year)
+        if new_month == 1:
+            duration = f"{get_year} year and {new_month} month"
+        else:
+            duration = f"{get_year} year and {new_month} months"
+    elif get_year>1 and get_month!=0:
+        new_month = month-(12*get_year)
+        if new_month == 1:
+            duration = f"{get_year} years and {new_month} month"
+        else:
+            duration = f"{get_year} years and {new_month} months"
+    else:
+        duration = "Invalid number of months"
+    return [month,duration]
+
+#Generate PYMTREF for PLASCHEMA
+@app.route("/payref", methods=["GET","POST"])
+def payref():
+    if request.method == "POST":
+        print("I'm here")
+        
+        enrolment_id = request.form['enrolment_id']  
+        if enrolment_id:
+            url = f"https://pshs3.herokuapp.com/verify/enrid/{enrolment_id}"
+            red= requests.post(url=url)
+            rese = red.json()
+            if not rese["status"]:
+                message = response["message"]
+                flash(message, "danger") #danger is a category
+                return redirect(url_for("payref"))
+            else:
+               name= rese["data"]["name"]
+               enrolment_id = enrolment_id
+               payment_type = "Topup"
+        else:
+            name = ""
+            enrolment_id = ""
+            payment_type = "PLASCHEMA form"
+        phone_number = request.form['phone_number']
+        dura = request.form['duration']
+        getduration = getDuration(dura)
+        duration = int(getduration[0])
+        duration_name = getduration[1]
+        merchant_id = "033"
+        amount = 1000*int(duration)
+        amount = float(str(format(float(amount),".2f")))
+        payload = {'customer_id':enrolment_id, 'duration':duration, 'merchant_id':merchant_id, "amount":amount, 'customer_phone':phone_number,'payment_channel':"USSD", "initiating_phone":phone_number}
+        headers = {
+                    'content-type': 'application/json',
+                    'x-access-token': os.environ.get("FIDELITY_KEY")
+                }
+        url = "https://safe-payy.herokuapp.com/coralpay/pos/paymentreference/generate"
+        try:
+            r = requests.post(url=url, json=payload, headers=headers)
+            response = r.json()
+            print(f"Response: {response}")
+        except Exception as e:
+            flash(e, "danger") #danger is a category
+            return redirect(url_for("payref"))
+
+        if response.get("status"):
+            message= f"From any bank, dial {response['data']} to pay for your subscription."
+            data ={'message':message,"paymentref":response['data'],'enrolment_id':enrolment_id, "name":name, 'phone_number':phone_number, 'payment_type':payment_type, 'duration':duration_name}
+            flash(message, "success") #success is a category
+            return render_template("success.html", title="success | safetech",data=data, player="player", videoId="0yyX7zshpvc", year=footer_year())
+
+        else:
+            message = response["message"]
+            flash(message, "danger") #danger is a category
+            return redirect(url_for("payref"))
+    
+    else:
+        return render_template("payref.html", title="PYMTREF | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
