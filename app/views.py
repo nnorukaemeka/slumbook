@@ -457,7 +457,7 @@ def payref():
     if request.method == "POST":
         print(request.form)
         
-        enrolment_id = request.form['enrolment_id']  
+        enrolment_id = request.form.get('enrolment_id')  
         if enrolment_id:
             url = f"https://pshs3.herokuapp.com/verify/enrid/{enrolment_id}"
             red= requests.post(url=url)
