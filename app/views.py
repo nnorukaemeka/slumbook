@@ -455,7 +455,7 @@ def getDuration(numberOfMonths):
 @app.route("/payref", methods=["GET","POST"])
 def payref():
     if request.method == "POST":
-        print("I'm here")
+        print(request.form)
         
         enrolment_id = request.form['enrolment_id']  
         if enrolment_id:
