@@ -127,6 +127,18 @@ color: white;
 text-align: center;
 }
 /* //this is for tst2021 table */
+table#t02 {
+  border-collapse: collapse;
+  width: 80%;
+}
+
+table#t02 th, table#t02 td {
+  padding: 5px;
+  text-align: left;
+  border-bottom: 1px solid #DDD;
+}
+
+table#t02 tr:hover {background-color: #D6EEEE;}
 
 /* alert */
 .alert{
