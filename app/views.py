@@ -471,8 +471,8 @@ def payref():
                enrolment_id = enrolment_id
                payment_type = "PLASCHEMA Topup"
         else:
-            name = "None"
-            enrolment_id = "None"
+            name = ""
+            enrolment_id = ""
             payment_type = "PLASCHEMA form"
         phone_number = request.form['phone_number']
         dura = request.form['duration']
