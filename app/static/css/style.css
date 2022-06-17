@@ -126,11 +126,18 @@ border-color: white;
 color: white;
 text-align: center;
 }
+
+@media (max-width: 768px) {
+  table>tr>td {
+    width: 100%;
+    float: left;
+  }
+}
 /* //this is for tst2021 table */
-table#t02 {
+/* table#t02 {
   border-collapse: collapse;
   width: 80%;
-}
+} */
 
 table#t02 th, table#t02 td {
   padding: 5px;
