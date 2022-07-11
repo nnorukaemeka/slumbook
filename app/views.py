@@ -509,3 +509,45 @@ def payref():
     
     else:
         return render_template("payref.html", title="PYMTREF | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
+
+
+
+#Generate PYMTREF for PLASCHEMA
+@app.route("/safepayverge", methods=["GET","POST"])
+def safepayverge():
+    if request.method == "POST":
+        print(request.form)
+        
+        customer_name = request.form['customer_name']
+        customer_email = request.form['customer_email']
+        customer_phone = request.form['customer_phone']
+        amount = request.form['amount']
+        merchant_id = "001"
+        # callback_url = f"https://safetech.herokuapp.com/safepayverge/confirm?auth={customer_phone}"
+
+        payload = {'customer_name':customer_name, 'customer_email':customer_email, 'merchant_id':merchant_id, "amount":amount,'customer_phone':customer_phone}
+        headers = {
+                    'content-type': 'application/json'
+                    # 'x-access-token': os.environ.get("FIDELITY_KEY")
+                }
+        url = "https://safe-payy.herokuapp.com/api/v1/idlcoralpay/verge/invokepayment"
+        try:
+            r = requests.post(url=url, json=payload, headers=headers)
+            response = r.json()
+            print(f"Response: {response}")
+        except Exception as e:
+            flash(e, "danger") #danger is a category
+            return redirect(url_for("safepayverge"))
+
+        if response.get("status"):
+            data = response.get("data")
+            pay_page_link = data["PayPageLink"]
+            return redirect(pay_page_link)
+
+        else:
+            message = response["message"]
+            flash(message, "danger") #danger is a category
+            return redirect(url_for("safepayverge"))
+    
+    else:
+        return render_template("testVerge.html", title="SafePAYVerge | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
