@@ -87,6 +87,23 @@
                     <label>Amount (NGN)</label><br>
                     <input type="number" min="1" name="amount" class="form-control" placeholder="Amount in Naira" required>
                     </div>
+                    <div class="col-md-6">
+                        <label>Select Merchant</label><br>
+                        <select name="merchant_id" class="form-control" required id="merchantid">
+                            <option value="">Select merchant</option>
+                            {% for merchant in merchants %}
+                            <option value="{{merchant.merchant_id}}">  {{merchant.business_name}}</option>
+                            {% endfor  %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Customer ID (If any)</label><br>
+                        <input type="text"  name="customer_id" class="form-control" placeholder="E.g: Reference no/ Registration no/ Enrolment Id">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Duration [in months] (PLASCHEMA ONLY)</label><br>
+                        <input type="number" min="1" max="24" name="duration" class="form-control" placeholder="Duration for payment in month(s)" required id="duratn">
+                    </div>
 
                     <div class="col-md-12">
                         <button type="submit">Checkout</button>
@@ -121,9 +138,9 @@
   
 
     <script>
-        var inp1 = document.getElementById("paytype");
+        var inp1 = document.getElementById("merchantid");
         inp1.addEventListener("input", function () {
-            document.getElementById("enrol").disabled = this.value != "topup";
+            document.getElementById("duratn").disabled = this.value != "033";
         });
     </script>
 

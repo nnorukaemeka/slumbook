@@ -526,10 +526,11 @@ def safepayverge():
         customer_email = request.form['customer_email']
         customer_phone = request.form['customer_phone']
         amount = request.form['amount']
-        merchant_id = "001"
+        merchant_id = request.form['merchant_id']
+        customer_id
         # callback_url = f"https://safetech.herokuapp.com/safepayverge/confirm?auth={customer_phone}"
 
-        payload = {'customer_name':customer_name, 'customer_email':customer_email, 'merchant_id':merchant_id, "amount":amount,'customer_phone':customer_phone}
+        payload = {'customer_name':customer_name, 'customer_email':customer_email, 'merchant_id':merchant_id, "customer_id":customer_id, "amount":amount,'customer_phone':customer_phone}
         
         url = "https://safe-payy.herokuapp.com/api/v1/idlcoralpay/verge/invokepayment"
         try:
@@ -551,7 +552,16 @@ def safepayverge():
             return redirect(url_for("safepayverge"))
     
     else:
-        return render_template("testVerge.html", title="SafePAYVerge | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
+        url = "https://safe-payy.herokuapp.com/coralpay/pos/user/paymenttype2"
+        try:
+            r = requests.get(url=url, headers=headers)
+            response = r.json()
+            print(f"Response: {response}")
+        except Exception as e:
+            flash(e, "danger") #danger is a category
+            return redirect(url_for("safepayverge"))
+        merchants = response.get("data")
+        return render_template("testVerge.html", title="SafePAYVerge | safetech", merchants=merchants, player="player", videoId="0yyX7zshpvc", year=footer_year())
 
 
 #Generate PYMTREF for PLASCHEMA
