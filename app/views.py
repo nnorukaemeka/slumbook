@@ -555,7 +555,7 @@ def safepayverge():
 
 
 #Generate PYMTREF for PLASCHEMA
-@app.route("/safepayverge/paymentref", methods=["GET","POST"])
+@app.route("/safepayvergepaymentref", methods=["GET","POST"])
 def safepayvergepaymentref():
     if request.method == "POST":
         print(request.form)
