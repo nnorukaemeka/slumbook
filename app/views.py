@@ -528,7 +528,7 @@ def safepayverge():
         amount = request.form['amount']
         merchant_id = request.form['merchant_id']
         customer_id = request.form['customer_id']
-        duration = request.form['duration']
+        duration = request.form['duration'] if request.form.get("duration") else ""
         # callback_url = f"https://safetech.herokuapp.com/safepayverge/confirm?auth={customer_phone}"
 
         payload = {'customer_name':customer_name, 'customer_email':customer_email, 'merchant_id':merchant_id, "customer_id":customer_id, "duration":duration, "amount":amount,'customer_phone':customer_phone}
