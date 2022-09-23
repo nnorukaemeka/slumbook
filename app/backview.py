@@ -85,7 +85,7 @@ class SlumbookUsers(Resource):
             return {"status":True, "message":"Oops! No result found.", "data":[]}, 200
         else:
             return {"status":True, "message":"result retrieved", "data": results, "count":len(results)}, 200
-    
+
     def post(self):
         data = SlumbookUsers.parser.parse_args()
         _fname = data["firstname"]

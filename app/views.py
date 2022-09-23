@@ -1,6 +1,7 @@
 #################################################
 #Import Libraries, Modules
 #################################################
+from time import time
 from flask.wrappers import Response
 from app import app, mongo
 from flask import render_template, jsonify, request, redirect, url_for, session,logging, flash
@@ -594,3 +595,18 @@ def safepayvergepaymentref():
     
     else:
         return render_template("testVergePaymentref.html", title="SafePAYVergePYMTREF | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
+
+
+@app.route("/get_my_ip", methods=["GET","POST"])
+def get_my_ip():
+    time = nigerian_time()
+    header = 'Headers: %s', request.headers
+    data = 'Body: %s', request.get_data()
+    remote_ip = {'ip': request.environ.get('REMOTE_ADDR')}
+    forwarded_ip = {'ip': request.environ.get('HTTP_X_FORWARDED_FOR')}
+    post = {"time":time, "header":header, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
+    post2 = {"time":time, "header":header, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
+    log = mongo.db.request_logs
+    log.insert_one(post)
+    return jsonify(post2), 200
+        
