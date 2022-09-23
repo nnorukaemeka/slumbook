@@ -609,7 +609,7 @@ def get_my_ip():
     forwarded_ip = {'ip': request.environ.get('HTTP_X_FORWARDED_FOR')}
     print("forwarded_ip: ", forwarded_ip)
     post = {"time":time, "header":header, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
-    post2 = {"time":time, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
+    post2 = {"time":time, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
     log = mongo.db.request_logs
     log.insert_one(post)
     return jsonify(post2), 200
