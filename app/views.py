@@ -601,9 +601,13 @@ def safepayvergepaymentref():
 def get_my_ip():
     time = nigerian_time()
     header = 'Headers: %s', request.headers
+    print("header: ", header)
     data = 'Body: %s', request.get_data()
+    print("data: ", data)
     remote_ip = {'ip': request.environ.get('REMOTE_ADDR')}
+    print("remote_ip: ", remote_ip)
     forwarded_ip = {'ip': request.environ.get('HTTP_X_FORWARDED_FOR')}
+    print("forwarded_ip: ", forwarded_ip)
     post = {"time":time, "header":header, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
     post2 = {"time":time, "header":header, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
     log = mongo.db.request_logs
