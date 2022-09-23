@@ -608,7 +608,7 @@ def get_my_ip():
     print("remote_ip: ", remote_ip)
     forwarded_ip = {'ip': request.environ.get('HTTP_X_FORWARDED_FOR')}
     print("forwarded_ip: ", forwarded_ip)
-    post = {"time":time, "data":data.__dict__, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
+    post = {"time":time, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
     post2 = {"time":time, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
     log = mongo.db.request_logs
     log.insert_one(post)
