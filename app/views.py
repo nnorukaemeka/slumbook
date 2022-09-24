@@ -602,15 +602,15 @@ def get_my_ip():
     time = nigerian_time()
     header = 'Headers: %s', request.headers
     print("header: ", header)
-    data = 'Body: %s', request.get_data()
+    data = request.get_data()
     print("data: ", data)
-    remote_ip = {'ip': request.environ.get('REMOTE_ADDR')}
-    print("remote_ip: ", remote_ip)
-    forwarded_ip = {'ip': request.environ.get('HTTP_X_FORWARDED_FOR')}
-    print("forwarded_ip: ", forwarded_ip)
-    post = {"time":time, "data":data, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
-    post2 = {"time":time, "remote_ip":remote_ip, "forwarded_ip":forwarded_ip}
+    REMOTE_ADDR = request.environ.get('REMOTE_ADDR')
+    print("REMOTE_ADDR: ", REMOTE_ADDR)
+    HTTP_X_FORWARDED_FOR = request.environ.get('HTTP_X_FORWARDED_FOR')
+    print("HTTP_X_FORWARDED_FOR: ", HTTP_X_FORWARDED_FOR)
+    post = {"time":time, "data":data, "remote_addr":REMOTE_ADDR, "http_x_forwarded_for":HTTP_X_FORWARDED_FOR}
+    response = {"time":time, "message":"request logged in successfully"}
     log = mongo.db.request_logs
     log.insert_one(post)
-    return jsonify(post2), 200
+    return jsonify(response), 200
         
