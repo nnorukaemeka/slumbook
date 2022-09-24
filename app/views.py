@@ -597,14 +597,13 @@ def safepayvergepaymentref():
         return render_template("testVergePaymentref.html", title="SafePAYVergePYMTREF | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
 
 
-from bson import json_util
 @app.route("/get_my_ip", methods=["GET","POST"])
 def get_my_ip():
     time = nigerian_time()
     header = 'Headers: %s', request.headers
     print("header: ", header)
     data1 = request.get_data()
-    data = json.loads(json_util.dumps(data1))
+    data = json.loads(data1.decode('utf-8'))
     print("data: ", data)
     REMOTE_ADDR = request.environ.get('REMOTE_ADDR')
     print("REMOTE_ADDR: ", REMOTE_ADDR)
