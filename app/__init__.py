@@ -4,7 +4,7 @@ from flask_restful import Api
 import os
 
 
-MONGO_URI = os.environ.get("MONGO_URI", default=False)
+MONGO_URI = os.environ.get("MONGO_URI", default=False) or "mongodb+srv://nnorukaemeka:oluchukwu@cluster0-k3hbu.mongodb.net/SAFETECH?retryWrites=true&w=majority"
 
 # Initialize application
 app = Flask(__name__, static_folder='static', template_folder='templates')
