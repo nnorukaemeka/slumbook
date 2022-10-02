@@ -1,6 +1,7 @@
 #################################################
 #Import Libraries, Modules
 #################################################
+from email import message
 from time import time
 from flask.wrappers import Response
 from app import app, mongo
@@ -596,6 +597,58 @@ def safepayvergepaymentref():
     else:
         return render_template("testVergePaymentref.html", title="SafePAYVergePYMTREF | safetech", player="player", videoId="0yyX7zshpvc", year=footer_year())
 
+headers = {
+            'content-type': 'application/json',
+            'x-access-token': "fidelity_idl-8Xrd9PAYsafX_e5CfFmq137w5"
+        }
+#Payment via Klump
+@app.route("/safepayklump", methods=["GET","POST"])
+def safepayklump():
+    if request.method == "POST":
+        print(request.form)
+        
+        customer_name = request.form['customer_name']
+        customer_email = request.form['customer_email']
+        customer_phone = request.form['customer_phone']
+        amount = request.form['amount']
+        merchant_id = request.form['merchant_id']
+        customer_id = request.form['customer_id']
+        duration = request.form['duration'] if request.form.get("duration") else ""
+        # callback_url = f"https://safetech.herokuapp.com/safepayverge/confirm?auth={customer_phone}"
+
+        payload = {'customer_name':customer_name, 'customer_email':customer_email, 'merchant_id':merchant_id, "customer_id":customer_id, "duration":duration, "amount":amount,'customer_phone':customer_phone}
+        
+        url = "https://safe-payy.herokuapp.com/api/v1/idlcoralpay/verge/invokepayment"
+        try:
+            r = requests.post(url=url, json=payload, headers=headers)
+            response = r.json()
+            print(f"Response: {response}")
+        except Exception as e:
+            flash(e, "danger") #danger is a category
+            return redirect(url_for("safepayklump"))
+
+        if response.get("status"):
+            return render_template("klump.html", title="SafePAYKlump | safetech", payloads=payload, player="player", videoId="0yyX7zshpvc", year=footer_year())
+
+        else:
+            message = response["message"]
+            flash(message, "danger") #danger is a category
+            return redirect(url_for("safepayklump"))
+    
+    else:
+        url = "https://safe-payy.herokuapp.com/coralpay/pos/user/paymenttype2"
+        try:
+            r = requests.get(url=url, headers=headers)
+            response = r.json()
+            print(f"Response: {response}")
+        except Exception as e:
+            flash(e, "danger") #danger is a category
+            return redirect(url_for("safepayklump"))
+        merchants = response.get("data")
+        return render_template("klump_init.html", title="SafePAYKlump | safetech", merchants=merchants, player="player", videoId="0yyX7zshpvc", year=footer_year())
+
+
+
 
 @app.route("/get_my_ip", methods=["GET","POST"])
 def get_my_ip():
@@ -616,7 +669,7 @@ def get_my_ip():
     return jsonify(response), 200
         
 
-############## TEST ######################
+############## TEST INTERBANK TRANSFER ######################
 from app import app, api
 from flask_restful import Resource, Api, reqparse
 import requests, json, hashlib
@@ -624,9 +677,6 @@ FIDELITY_HASH_KEY = "ebac1caa-a997-44c5-9852-8509f3778ba7"
 FIDELITY_CLIENT_ID = "IDL@Fid"
 FIDELITY_CLIENT_KEY = "9c8d3b34-7c2f-46f2-b6a1-9772920e861a"
 FIDELITY_BASE_URL = "https://mtnsimswap.fidelitybank.ng/CDL_API"
-proxies = {
-    "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
-    "https": "https://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
 
 
 class FidelityTestFundTransfer(Resource):
@@ -664,8 +714,9 @@ class FidelityTestFundTransfer(Resource):
         key = FIDELITY_HASH_KEY
         amount = str(format(float(data["TransferAmount"]),".1f"))
         macCipher = data["DestinationAccount"] + amount + key
-        # MAC = SHA512(macCipher.encode('ascii'))
+        # MAC = hashlib.sha512(macCipher.encode('ascii'))
         MAC = hashlib.sha512(macCipher.encode('utf-8')).hexdigest()
+        print("MAC: ", MAC.upper())
 
         headers = {
                 'Content-Type': 'application/json',
@@ -673,7 +724,12 @@ class FidelityTestFundTransfer(Resource):
                 'client-id': FIDELITY_CLIENT_ID,
                 'client-key': FIDELITY_CLIENT_KEY
             }
+        proxies = {
+            "https": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
+            "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
         print(f"headers: {headers}")
+        s = requests.Session()
+        s.proxies.update(proxies)
         payload = {
                     "DestinationAccount": data["DestinationAccount"],
                     "DestinationBankCode": data["DestinationBankCode"],
@@ -685,41 +741,158 @@ class FidelityTestFundTransfer(Resource):
                     }
         print(f"payload posted: {payload}")
         try:
-            r = requests.get("http://ip.quotaguard.com/", proxies=proxies)
+            r = s.get("http://ip.quotaguard.com/", proxies=proxies)
             ip = r.json()['ip']
             print('Your public IP is:', ip)
             url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/InterbankTransfer"
             print(f"url: {url}")
-            s = requests.session()
-            responses2 = s.request(method="GET", url="http://safetech.herokuapp.com/get_my_ip", json=payload,  proxies=proxies, headers=headers)
-            results2 = responses2.json()
-            print("log_result: ",results2)
-            s.close()
-            log = mongo.db.response_logs
-            log.insert_one(results2)
-            print("i'm here")
-
             # s = requests.session()
-            # responses = s.request(method="POST", url=url, data=payload,  proxies=proxies, headers=headers)
-            # results = responses.json()
-            # print(results)
-            # s.close()
+            # responses2 = s.request(method="GET", url=url2, json=payload,  proxies=proxies, headers=headers)
+            # responses2 = s.get("http://safetech.herokuapp.com/get_my_ip",json=payload,  proxies=proxies, headers=headers)
+            # results2 = responses2.json()
+            # print("log_result: ",results2)
+            # # s.close()
+            # log = mongo.db.response_logs
+            # log.insert_one(results2)
+            # print("safetech")
+            requests.urllib3.disable_warnings()
+            responses = s.post(url=url, json=payload, proxies=proxies, verify=False, headers=headers)
+            # responses = requests.post(url=url,data=payload,  proxies=proxies, headers=headers)
+            results = responses.json()
+            # results = json.loads(responses.content)
+            print(results)
+            # log = mongo.db.response_logs
+            # log.insert_one(results)
+            print("i'm at Fidelity")
         except json.decoder.JSONDecodeError as e:
             return {'status': False, 'message': str(e)}
         except TypeError as e:
             return {'status': False, 'message': str(e)}
-        except Exception as e:
-            s = requests.session()
-            responses2 = s.request(method="GET", url="http://safetech.herokuapp.com/get_my_ip", json=payload,  proxies=proxies, headers=headers)
-            results2 = responses2.json()
-            print("log_result: ",results2)
-            log = mongo.db.response_logs
-            log.insert_one(results2)
-            s.close()
-            return {'status': False, 'message': str(e), "data":results2}
+        except requests.exceptions as e:
+            return {'status': False, 'message': str(e), "data":""}
         # return results
         # if results["Result"]["responseCode"]=="00":
-        return {"status": True, "message": results2["message"], "data":""}, 200
+        if results.get("Result"):
+            result = results.get("Result")
+            message = result["responseMessage"]
+            if result["responseCode"] == "00":
+                return {"status": True, "message": message, "data":result}, 200
+            else:
+                return {"status": False, "message": message, "data":result}, 400
+        else:
+            result = results
+            message = result["responseMessage"]
+            return {"status": False, "message": message, "data":result}, 400
         # else:
         #     return {"status": False, "message": results["Result"]["responseMessage"], "data":results}, 200
 api.add_resource(FidelityTestFundTransfer, '/api/v1/idlfidelitybank/interbank/fundtransfer/test')
+
+
+
+############## TEST INTRABANK TRANSFER ######################
+
+class FidelityTestFundTransferIntra(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('TransferAmount', 
+                        type=str,
+                        required=True, 
+                        help="Enter Amount. Field cannot be left blank")
+    parser.add_argument('DestinationAccount', 
+                        type=str,
+                        required=True, 
+                        help="Enter BeneficiaryAccount. Field cannot be left blank")
+    parser.add_argument('DestinationBankCode', 
+                        type=str, 
+                        help="Enter BeneficiaryBankCode. Field cannot be left blank")
+    parser.add_argument('BeneficiaryName', 
+                        type=str,
+                        required=True, 
+                        help="Enter BeneficiaryName. Field cannot be left blank")
+    parser.add_argument('Narration', 
+                        type=str,
+                        required=True,
+                        help="Enter Narration. Field cannot be left blank")
+    parser.add_argument('ReferenceNumber', 
+                        type=str,
+                        required=True,
+                        help="Enter ReferenceNumber. Field cannot be left blank")
+   
+    def post(self):
+        data = FidelityTestFundTransferIntra.parser.parse_args()
+        print("FidelityFundTransfer :", data)
+        
+        key = FIDELITY_HASH_KEY
+        amount = str(format(float(data["TransferAmount"]),".1f"))
+        macCipher = data["DestinationAccount"] + amount + key
+        # MAC = hashlib.sha512(macCipher.encode('ascii'))
+        MAC = hashlib.sha512(macCipher.encode('utf-8')).hexdigest()
+        print("MAC: ", MAC.upper())
+
+        headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'client-id': FIDELITY_CLIENT_ID,
+                'client-key': FIDELITY_CLIENT_KEY
+            }
+        proxies = {
+            "https": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
+            "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
+        print(f"headers: {headers}")
+        s = requests.Session()
+        s.proxies.update(proxies)
+        payload = {
+                    "DestinationAccount": data["DestinationAccount"],
+                    "TransferAmount": float(data["TransferAmount"]),
+                    "Narration": data["Narration"],
+                    "BeneficiaryName": data["BeneficiaryName"],
+                    "ReferenceNumber": data["ReferenceNumber"],
+                    "Hash":MAC.upper()
+                    }
+        print(f"payload posted: {payload}")
+        try:
+            r = s.get("http://ip.quotaguard.com/", proxies=proxies)
+            ip = r.json()['ip']
+            print('Your public IP is:', ip)
+            url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/IntraTransfer"
+            print(f"url: {url}")
+            # s = requests.session()
+            # responses2 = s.request(method="GET", url=url2, json=payload,  proxies=proxies, headers=headers)
+            # responses2 = s.get("http://safetech.herokuapp.com/get_my_ip",json=payload,  proxies=proxies, headers=headers)
+            # results2 = responses2.json()
+            # print("log_result: ",results2)
+            # # s.close()
+            # log = mongo.db.response_logs
+            # log.insert_one(results2)
+            # print("safetech")
+            requests.urllib3.disable_warnings()
+            responses = s.post(url=url, json=payload, proxies=proxies, verify=False, headers=headers)
+            # responses = requests.post(url=url,data=payload,  proxies=proxies, headers=headers)
+            results = responses.json()
+            # results = json.loads(responses.content)
+            print(results)
+            # log = mongo.db.response_logs
+            # log.insert_one(results)
+            print("i'm at Fidelity")
+        except json.decoder.JSONDecodeError as e:
+            return {'status': False, 'message': str(e)}
+        except TypeError as e:
+            return {'status': False, 'message': str(e)}
+        except requests.exceptions as e:
+            return {'status': False, 'message': str(e), "data":""}
+        # return results
+        # if results["Result"]["responseCode"]=="00":
+        if results.get("Result"):
+            result = results.get("Result")
+            message = result["responseMessage"]
+            if result["responseCode"] == "00":
+                return {"status": True, "message": message, "data":result}, 200
+            else:
+                return {"status": False, "message": message, "data":result}, 400
+        else:
+            result = results
+            message = result["responseMessage"]
+            return {"status": False, "message": message, "data":result}, 400
+        # else:
+        #     return {"status": False, "message": results["Result"]["responseMessage"], "data":results}, 200
+api.add_resource(FidelityTestFundTransferIntra, '/api/v1/idlfidelitybank/intrabank/fundtransfer/test')

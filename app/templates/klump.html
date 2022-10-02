@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %} {{ title }} {% endblock %} </title>
+  <meta content="" name="description">
+
+  <meta content="" name="keywords">
+  <meta name="google-signin-client_id" content="331292061459-335eds4gfjul3819gpkc7t80q5sdoaj9.apps.googleusercontent.com">
+
+  <!-- Favicons -->
+  <link href="static/img/SafePAY_logo1.jpg" rel="icon">
+  <link href="static/img/SafePAY_logo1.jpg" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/vendor/aos/aos.css" rel="stylesheet">
+  <link href="static/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="static/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="static/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: FlexStart - v1.4.0
+  * Template URL: https://bootstrapmade.com/flexstart-bootstrap-startup-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <script src="https://js.useklump.com/klump.js" defer></script>
+
+</head>
+
+<body>
+    <header id="header" class="header fixed-top">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+    
+          <a href="#" class="logo d-flex align-items-center">
+            <img src="static/img/SafePAY_logo1.jpg" class="img-fluid" height="20%" alt="">
+          </a>
+        </div>
+    </header><!-- End Header -->
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="hero d-flex align-items-center contact">
+
+    <div class="container">
+
+        <div class="row gy-4">
+        <div class="col-lg-12">
+            <br><br>
+        </div>
+        <div class="col-lg-12">
+            <!-- ======= Flash ======= -->
+            {% include 'includes/_message.html' %}
+            <!-- End Flash -->
+        </div>
+        
+        <div class="col-lg-12 d-flex flex-column justify-content-center">
+            <header class="section-header" style="text-align: left;">
+                <p>Payment using SafePAY Klump</p>
+                </header>
+            <!-- <p>Sign Up</p> -->
+            <form action="/safepayklump" method="post" class="php-email-form" enctype=multipart/form-data>
+                <div class="row gy-4">
+
+                    <div class="col-md-6">
+                        <label>Click button below to pay NGN {{ payloads.amount }}</label><br>
+                    </div>
+
+                    <div class="col-md-12" id="klump__checkout">
+                        <button type="submit">Pay with Klump</button>
+                    </div>
+
+                </div>
+                </form>
+                
+        </div>
+
+        </div>
+    </div>
+
+    </section><!-- End Hero -->
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer"><br><br>
+        <div id="klump__ad">
+            <input type="number" value="2000" id="klump__price">
+            <input type="text" value="klp_pk_abcde12345fghijkl" id="klp_pk_test_98ca28b321944713a00886bb229341d26db7dd85ee1b4266808b2576ca9e3f4d">
+            <input type="text" value="NGN" id="klump__currency">
+         </div>
+        <div class="container">
+        <div class="copyright">
+            &copy; {% block year %} {{ year }} {% endblock %} <strong><span> - Safe Technologies</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            Designed by <a href="http://safetech.herokuapp.com/">SafeTech</a>
+        </div>
+        </div>
+    </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  
+
+<script>
+    const payload = {
+        publicKey: 'klp_pk_test_98ca28b321944713a00886bb229341d26db7dd85ee1b4266808b2576ca9e3f4d',
+        data: {
+            amount: '{{ payloads.amount }}',
+            shipping_fee: 0,
+            currency: 'NGN',
+            redirect_url: 'https://verygoodmerchant.com/checkout/confirmation',
+            merchant_reference: '{{ payloads.merchant_id }}',
+            meta_data: {
+              customer: '{{ payloads.customer_name }}',
+              email: '{{ payloads.customer_email }}'
+            },
+            items: [
+                {
+                    image_url:
+                        'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+                    item_url: 'https://www.paypal.com/in/webapps/mpp/home',
+                    name: 'SafePay testing',
+                    unit_price: '{{ payloads.amount }}',
+                    quantity: 1,
+                }
+            ]
+        },
+        onSuccess: (data) => {
+            console.log('html onSuccess will be handled by the merchant');
+            console.log(data);
+            ok = data;
+            return data;
+        },
+        onError: (data) => {
+            console.log('html onError will be handled by the merchant');
+            console.log(data);
+        },
+        onLoad: (data) => {
+            console.log('html onLoad will be handled by the merchant');
+            console.log(data);
+        },
+        onOpen: (data) => {
+            console.log('html OnOpen will be handled by the merchant');
+            console.log(data);
+        },
+        onClose: (data) => {
+            console.log('html onClose will be handled by the merchant');
+            console.log(data);
+        }
+    }
+    document.getElementById('klump__checkout').addEventListener('click', function () {
+        const klump = new Klump(payload);
+    });
+</script>
+
+
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="static/vendor/aos/aos.js"></script>
+  <script src="static/vendor/php-email-form/validate.js"></script>
+  <script src="static/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="static/vendor/purecounter/purecounter.js"></script>
+  <script src="static/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="static/vendor/glightbox/js/glightbox.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="static/js/main.js"></script>
+
+</body>
+
+</html>
+
