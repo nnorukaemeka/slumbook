@@ -567,7 +567,7 @@ def safepayverge():
         return render_template("testVerge.html", title="SafePAYVerge | safetech", merchants=merchants, player="player", videoId="0yyX7zshpvc", year=footer_year())
 
 
-#Generate PYMTREF for PLASCHEMA
+#verge payment using PYMTREF
 @app.route("/safepayvergepaymentref", methods=["GET","POST"])
 def safepayvergepaymentref():
     if request.method == "POST":
@@ -896,3 +896,239 @@ class FidelityTestFundTransferIntra(Resource):
         # else:
         #     return {"status": False, "message": results["Result"]["responseMessage"], "data":results}, 200
 api.add_resource(FidelityTestFundTransferIntra, '/api/v1/idlfidelitybank/intrabank/fundtransfer/test')
+
+
+############## TEST INTRABANK NAME ENQUIRY ######################
+class FidelityTestIntraBankNameEnquiry(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('DestinationAccount', 
+                        type=str,
+                        required=True, 
+                        help="Enter BeneficiaryAccount. Field cannot be left blank")
+    
+    def post(self):
+        data = FidelityTestIntraBankNameEnquiry.parser.parse_args()
+        print("FidelityTestIntraBankNameEnquiry :", data)
+
+        headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'client-id': FIDELITY_CLIENT_ID,
+                'client-key': FIDELITY_CLIENT_KEY
+            }
+        print(f"headers: {headers}")
+        proxies = {
+            "https": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
+            "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
+        s = requests.Session()
+        s.proxies.update(proxies)
+        DestinationAccount =  data["DestinationAccount"]
+        # try:
+        r = s.get("http://ip.quotaguard.com/", proxies=proxies)
+        ip = r.json()['ip']
+        print('Your public IP is:', ip)
+        url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/IntrabankNamEnquiry?AccountNumber={DestinationAccount}"
+        print(f"url: {url}")
+        responses = s.get(url=url, proxies=proxies, verify=False, headers=headers)
+        # results = responses.json()
+        results = json.loads(responses.text)
+        print(results)
+        # except json.decoder.JSONDecodeError as e:
+        #     return {'status': False, 'message': str(e), "data":""}
+        # except TypeError as e:
+        #     return {'status': False, 'message': str(e),"data":""}
+        # except Exception as e:
+        #     return {'status': False, 'message': str(e), "data":""}
+        
+        if results:
+            return {"status": True, "message": "Name enquiry successful", "data":results}, 200
+        else:
+            return {"status": False, "message": "failed", "data":results}, 400
+api.add_resource(FidelityTestIntraBankNameEnquiry, '/api/v1/idlfidelitybank/intrabank/nameequiry/test')
+
+
+############## TEST INTERBANK REQUERY ######################
+class FidelityTestInterBankREQUERY(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('ReferenceNumber', 
+                        type=str,
+                        required=True,
+                        help="Enter ReferenceNumber. Field cannot be left blank")
+   
+    def post(self):
+        data = FidelityTestInterBankREQUERY.parser.parse_args()
+        print("FidelityTestInterBankREQUERY :", data)
+        
+        headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'client-id': FIDELITY_CLIENT_ID,
+                'client-key': FIDELITY_CLIENT_KEY
+            }
+        print(f"headers: {headers}")
+        s = requests.Session()
+        proxies = {
+            "https": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
+            "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
+        s.proxies.update(proxies)
+        params = {
+            "ReferenceNumber":data["ReferenceNumber"]
+        }
+        # ReferenceNumber = data["ReferenceNumber"]
+       
+        try:
+            r = s.get("http://ip.quotaguard.com/", proxies=proxies)
+            ip = r.json()['ip']
+            print('Your public IP is:', ip)
+            url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/InterRequery"
+            print(f"url: {url}")
+            responses = s.get(url=url, proxies=proxies, params=params, verify=False, headers=headers)
+            results = responses.json()
+            print(results)
+        except json.decoder.JSONDecodeError as e:
+            return {'status': False, 'message': str(e), "data":""}
+        except TypeError as e:
+            return {'status': False, 'message': str(e),"data":""}
+        except Exception as e:
+            return {'status': False, 'message': str(e), "data":""}
+        #
+        if results.get("Result"):
+            result = results.get("Result")
+            message = result["responseMessage"]
+            if result["responseCode"] == "00":
+                return {"status": True, "message": message, "data":result}, 200
+            else:
+                return {"status": False, "message": message, "data":result}, 400
+        else:
+            result = results
+            message = result["responseMessage"]
+            return {"status": False, "message": message, "data":result}, 400
+api.add_resource(FidelityTestInterBankREQUERY, '/api/v1/idlfidelitybank/interbank/enquery/test')
+
+
+############## TEST INTRABANK REQUERY ######################
+class FidelityTestIntraBankREQUERY(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('ReferenceNumber', 
+                        type=str,
+                        required=True,
+                        help="Enter ReferenceNumber. Field cannot be left blank")
+   
+    def post(self):
+        data = FidelityTestIntraBankREQUERY.parser.parse_args()
+        print("FidelityTestIntraBankREQUERY :", data)
+        
+        headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'client-id': FIDELITY_CLIENT_ID,
+                'client-key': FIDELITY_CLIENT_KEY
+            }
+        print(f"headers: {headers}")
+        proxies = {
+            "https": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
+            "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
+        s = requests.Session()
+        s.proxies.update(proxies)
+        ReferenceNumber = data["ReferenceNumber"]
+       
+        try:
+            r = s.get("http://ip.quotaguard.com/", proxies=proxies)
+            ip = r.json()['ip']
+            print('Your public IP is:', ip)
+            url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/IntraRequery?ReferenceNumber={ReferenceNumber}"
+            print(f"url: {url}")
+            responses = s.get(url=url, proxies=proxies, verify=False, headers=headers)
+            results = responses.json()
+            print(results)
+        except json.decoder.JSONDecodeError as e:
+            return {'status': False, 'message': str(e), "data":""}
+        except TypeError as e:
+            return {'status': False, 'message': str(e),"data":""}
+        except Exception as e:
+            return {'status': False, 'message': str(e), "data":""}
+        #
+        if results.get("Result"):
+            result = results.get("Result")
+            message = result["responseMessage"]
+            if result["responseCode"] == "00":
+                return {"status": True, "message": message, "data":result}, 200
+            else:
+                return {"status": False, "message": message, "data":result}, 400
+        else:
+            result = results
+            message = result["responseMessage"]
+            return {"status": False, "message": message, "data":result}, 400
+api.add_resource(FidelityTestIntraBankREQUERY, '/api/v1/idlfidelitybank/intrabank/enquery/test')
+
+
+
+###################################################################
+################### TERMII SMS ####################################
+
+TERMII_API_KEY = "TLeGtkb5qj7nvYTgyfPvim5UilNlXaYDmGg3lk7Y7KSRCEtELVXUjT9TIOSqgO"
+
+class TermiiSendSMS(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('sender',type=str,required=True,help="Enter Sender. Field cannot be left blank")
+    parser.add_argument('receiver',type=str,required=True,help="Enter Receiver number. Field cannot be left blank")
+    parser.add_argument('message',type=str,required=True,help="Enter Message. Field cannot be left blank")
+    
+    def post(self):
+        data = TermiiSendSMS.parser.parse_args()
+        sender = str(data['sender']).upper()
+        receiver = str(data['receiver'])
+        message = str(data['message'])
+        if len(receiver) != 11 or len(''.join(i for i in receiver if i.isdigit())) != 11:
+            return {"status": False, "message": "Phone number must be 11 digits"}, 404
+        # Set the phone number in international format
+        recipients = f"234{receiver[1:]}"
+        print(recipients)
+        if sender not in ["SAFEPAY", "PLASCHEMA"]:
+            return {"status": False, "message": "Invalid SenderID. Please contact admin for assistance.", "data":""},404
+        if sender=="SAFEPAY":
+            sender = "SafePAY"
+
+        url = "https://api.ng.termii.com/api/sms/send"
+        payload = {
+                "to": recipients,
+                "from": "N-Alert",
+                "sms": f"{sender}\n{message}\npowered by Instant Deposit Ltd",
+                "type": "plain",
+                "channel": "dnd",
+                "api_key": TERMII_API_KEY 
+            }
+        # payload = {
+        #         "to": recipients,
+        #         "from": sender,
+        #         "sms": message,
+        #         "type": "plain",
+        #         "channel": "generic",
+        #         "api_key": TERMII_API_KEY 
+        #     }
+        headers = {
+        'Content-Type': 'application/json',
+        }
+        response = requests.request("POST", url, headers=headers, json=payload)
+        print(response.text)
+        e=response.json()
+        return {"status": True, "message": e, "data":""}
+
+        # try:
+        #     # response = sms.send(message, [recipients], sender)
+        #     response = requests.post( url = url, headers = headers, data = data )
+        #     r = response.json()
+        #     message = r["SMSMessageData"]["Message"].split(" ")[0]
+        #     if message.lower() != "sent":
+        #         return {"status": False, "message": message, "data":r["SMSMessageData"]}
+        #     else:
+        #         return {"status": True, "message": "Message sent.", "data":r["SMSMessageData"]}
+        # except Exception as e:
+        #     return {"status": False, "message": e, "data":""}
+
+api.add_resource(TermiiSendSMS, '/api/client/sms')
+
