@@ -465,6 +465,7 @@ def payref():
             url = f"https://pshs3.herokuapp.com/verify/enrid/{enrolment_id}"
             red= requests.post(url=url)
             rese = red.json()
+            print(f"enrolment_validation_response: {rese}")
             if not rese["status"]:
                 message = rese["message"]
                 flash(message, "danger") #danger is a category
