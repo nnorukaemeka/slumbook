@@ -500,8 +500,8 @@ def payref():
             return redirect(url_for("payref"))
 
         if response.get("status"):
-            message= f"From any bank, dial {response['data']} to pay for your subscription."
-            data ={'message':message,"paymentref":response['data'],'amount':amount,'enrolment_id':enrolment_id, "name":name, 'phone_number':phone_number, 'payment_type':payment_type, 'duration':duration_name}
+            message= f"From any bank, dial {response['data']} or click the link {response['link']} to pay for your subscription."
+            data ={'message':message,"paymentref":response['data'], "link":response['link'], 'amount':amount,'enrolment_id':enrolment_id, "name":name, 'phone_number':phone_number, 'payment_type':payment_type, 'duration':duration_name}
             flash(message, "success") #success is a category
             return render_template("payref_success.html", title="success | safetech",data=data, player="player", videoId="0yyX7zshpvc", year=footer_year())
 
@@ -673,11 +673,19 @@ def get_my_ip():
 from app import app, api
 from flask_restful import Resource, Api, reqparse
 import requests, json, hashlib
-FIDELITY_HASH_KEY = "ebac1caa-a997-44c5-9852-8509f3778ba7"
-FIDELITY_CLIENT_ID = "IDL@Fid"
-FIDELITY_CLIENT_KEY = "9c8d3b34-7c2f-46f2-b6a1-9772920e861a"
-FIDELITY_BASE_URL = "https://mtnsimswap.fidelitybank.ng/CDL_API"
 
+# LIVE
+FIDELITY_HASH_KEY = "5cad9984-c82b-4d33-85d7-20804e4d2b30"
+FIDELITY_CLIENT_ID = "IDL@Fid"
+FIDELITY_CLIENT_KEY = "67ca8447-15bc-4fea-8112-11ff17a7fa85"
+FIDELITY_BASE_URL = "https://196.13.161.29/Transfer"
+
+
+# #TEST
+# FIDELITY_HASH_KEY = "ebac1caa-a997-44c5-9852-8509f3778ba7"
+# FIDELITY_CLIENT_ID = "IDL@Fid"
+# FIDELITY_CLIENT_KEY = "9c8d3b34-7c2f-46f2-b6a1-9772920e861a"
+# FIDELITY_BASE_URL = "https://mtnsimswap.fidelitybank.ng:443/CDL_API"
 
 class FidelityTestFundTransfer(Resource):
     parser = reqparse.RequestParser()
@@ -755,7 +763,7 @@ class FidelityTestFundTransfer(Resource):
             # log = mongo.db.response_logs
             # log.insert_one(results2)
             # print("safetech")
-            requests.urllib3.disable_warnings()
+            # requests.urllib3.disable_warnings()
             responses = s.post(url=url, json=payload, proxies=proxies, verify=False, headers=headers)
             # responses = requests.post(url=url,data=payload,  proxies=proxies, headers=headers)
             results = responses.json()
@@ -768,20 +776,20 @@ class FidelityTestFundTransfer(Resource):
             return {'status': False, 'message': str(e)}
         except TypeError as e:
             return {'status': False, 'message': str(e)}
-        except requests.exceptions as e:
+        except Exception as e:
             return {'status': False, 'message': str(e), "data":""}
         # return results
         # if results["Result"]["responseCode"]=="00":
         if results.get("Result"):
             result = results.get("Result")
-            message = result["responseMessage"]
+            message = result.get("responseMessage")
             if result["responseCode"] == "00":
                 return {"status": True, "message": message, "data":result}, 200
             else:
                 return {"status": False, "message": message, "data":result}, 400
         else:
             result = results
-            message = result["responseMessage"]
+            message = result.get("Message")
             return {"status": False, "message": message, "data":result}, 400
         # else:
         #     return {"status": False, "message": results["Result"]["responseMessage"], "data":results}, 200
@@ -790,7 +798,6 @@ api.add_resource(FidelityTestFundTransfer, '/api/v1/idlfidelitybank/interbank/fu
 
 
 ############## TEST INTRABANK TRANSFER ######################
-
 class FidelityTestFundTransferIntra(Resource):
     parser = reqparse.RequestParser()
 
@@ -825,7 +832,7 @@ class FidelityTestFundTransferIntra(Resource):
         key = FIDELITY_HASH_KEY
         amount = str(format(float(data["TransferAmount"]),".1f"))
         macCipher = data["DestinationAccount"] + amount + key
-        # MAC = hashlib.sha512(macCipher.encode('ascii'))
+        # MAC = hashlib.sha512(macCipher.encode('ascii')).hexdigest()
         MAC = hashlib.sha512(macCipher.encode('utf-8')).hexdigest()
         print("MAC: ", MAC.upper())
 
@@ -846,7 +853,7 @@ class FidelityTestFundTransferIntra(Resource):
                     "TransferAmount": float(data["TransferAmount"]),
                     "Narration": data["Narration"],
                     "BeneficiaryName": data["BeneficiaryName"],
-                    "ReferenceNumber": data["ReferenceNumber"],
+                    "ReferenceNumber": int(data["ReferenceNumber"]),
                     "Hash":MAC.upper()
                     }
         print(f"payload posted: {payload}")
@@ -865,8 +872,8 @@ class FidelityTestFundTransferIntra(Resource):
             # log = mongo.db.response_logs
             # log.insert_one(results2)
             # print("safetech")
-            requests.urllib3.disable_warnings()
-            responses = s.post(url=url, json=payload, proxies=proxies, verify=False, headers=headers)
+            # requests.urllib3.disable_warnings()
+            responses = s.post(url=url, json=payload, proxies=proxies, headers=headers)
             # responses = requests.post(url=url,data=payload,  proxies=proxies, headers=headers)
             results = responses.json()
             # results = json.loads(responses.content)
@@ -878,8 +885,8 @@ class FidelityTestFundTransferIntra(Resource):
             return {'status': False, 'message': str(e)}
         except TypeError as e:
             return {'status': False, 'message': str(e)}
-        except requests.exceptions as e:
-            return {'status': False, 'message': str(e), "data":""}
+        except Exception as e:
+            return {'status': False, 'message': str(e), "data":""}, 400
         # return results
         # if results["Result"]["responseCode"]=="00":
         if results.get("Result"):
@@ -896,6 +903,64 @@ class FidelityTestFundTransferIntra(Resource):
         # else:
         #     return {"status": False, "message": results["Result"]["responseMessage"], "data":results}, 200
 api.add_resource(FidelityTestFundTransferIntra, '/api/v1/idlfidelitybank/intrabank/fundtransfer/test')
+
+############## TEST INTERBANK NAME ENQUIRY ######################
+class FidelityTestInterBankNameEnquiry(Resource):
+    parser = reqparse.RequestParser()
+
+    parser.add_argument('DestinationAccount', 
+                        type=str,
+                        required=True, 
+                        help="Enter BeneficiaryAccount. Field cannot be left blank")
+    parser.add_argument('DestinationBankCode', 
+                        type=str,
+                        required=True, 
+                        help="Enter BeneficiaryBankCode. Field can be left blank")
+    
+    def post(self):
+        data = FidelityTestInterBankNameEnquiry.parser.parse_args()
+        print("FidelityTestInterBankNameEnquiry :", data)
+
+        headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'client-id': FIDELITY_CLIENT_ID,
+                'client-key': FIDELITY_CLIENT_KEY
+            }
+        print(f"headers: {headers}")
+        proxies = {
+            "https": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
+            "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
+        print(f"headers: {headers}")
+        s = requests.Session()
+        s.proxies.update(proxies)
+        payload = {
+                    "DestinationAccount": data["DestinationAccount"],
+                    "DestinationBankCode": data["DestinationBankCode"]
+                    }
+        print(f"payload posted: {payload}")
+        try:
+            r = s.get("http://ip.quotaguard.com/", proxies=proxies)
+            ip = r.json()['ip']
+            print('Your public IP is:', ip)
+            # url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/InterbankNamEnquiry"
+            url = "https://196.13.161.29/Transfer/FidelityFundsTransfer/InterbankNamEnquiry"
+            print(f"url: {url}")
+            responses = s.post(url=url, json=payload, proxies=proxies, verify=False, headers=headers)
+            results = responses.json()
+            print(results)
+        except json.decoder.JSONDecodeError as e:
+            return {'status': False, 'message': str(e), "data":""}
+        except TypeError as e:
+            return {'status': False, 'message': str(e),"data":""}
+        except Exception as e:
+            return {'status': False, 'message': str(e), "data":""}, responses.status_code
+        
+        if results.get("responseCode") == "00":
+            return {"status": True, "message": "Name enquiry successful", "data":results}, 200
+        else:
+            return {"status": False, "message": "failed", "data":results}, 400
+api.add_resource(FidelityTestInterBankNameEnquiry, '/api/v1/idlfidelitybank/interbank/nameequiry/test')
 
 
 ############## TEST INTRABANK NAME ENQUIRY ######################
@@ -921,25 +986,27 @@ class FidelityTestIntraBankNameEnquiry(Resource):
         proxies = {
             "https": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293",
             "http": "http://ncxc3t7t5ovtnd:328gqtt234xhhsr6r1a2xjp6p9p@us-east-static-06-a.quotaguard.com:9293"}
+        print(f"headers: {headers}")
         s = requests.Session()
         s.proxies.update(proxies)
         DestinationAccount =  data["DestinationAccount"]
-        # try:
-        r = s.get("http://ip.quotaguard.com/", proxies=proxies)
-        ip = r.json()['ip']
-        print('Your public IP is:', ip)
-        url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/IntrabankNamEnquiry?AccountNumber={DestinationAccount}"
-        print(f"url: {url}")
-        responses = s.get(url=url, proxies=proxies, verify=False, headers=headers)
-        # results = responses.json()
-        results = json.loads(responses.text)
-        print(results)
-        # except json.decoder.JSONDecodeError as e:
-        #     return {'status': False, 'message': str(e), "data":""}
-        # except TypeError as e:
-        #     return {'status': False, 'message': str(e),"data":""}
-        # except Exception as e:
-        #     return {'status': False, 'message': str(e), "data":""}
+        try:
+            r = s.get("http://ip.quotaguard.com/", proxies=proxies)
+            ip = r.json()['ip']
+            print('Your public IP is:', ip)
+            # url = f"{FIDELITY_BASE_URL}/FidelityFundsTransfer/IntrabankNamEnquiry?AccountNumber={DestinationAccount}"
+            url = f"https://196.13.161.29/Transfer/FidelityFundsTransfer/IntraNameEnquiry?AccountNumber={DestinationAccount}"
+            print(f"url: {url}")
+            responses = s.get(url=url, proxies=proxies,verify=False, headers=headers)
+            results = responses.json()
+            # results = json.loads(responses.text)
+            print(results)
+        except json.decoder.JSONDecodeError as e:
+            return {'status': False, 'message': str(e), "data":""}
+        except TypeError as e:
+            return {'status': False, 'message': str(e),"data":""}
+        except Exception as e:
+            return {'status': False, 'message': str(e), "data":""}
         
         if results:
             return {"status": True, "message": "Name enquiry successful", "data":results}, 200
