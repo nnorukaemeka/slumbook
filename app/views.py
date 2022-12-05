@@ -462,18 +462,23 @@ def payref():
         
         enrolment_id = request.form.get('enrolment_id')  
         if enrolment_id:
-            url = f"https://pshs3.herokuapp.com/verify/enrid/{enrolment_id}"
-            red= requests.post(url=url)
-            rese = red.json()
-            print(f"enrolment_validation_response: {rese}")
-            if not rese["status"]:
-                message = rese["message"]
+            try:
+                url = f"https://pshs3.herokuapp.com/verify/enrid/{enrolment_id}"
+                red= requests.post(url=url)
+                rese = red.json()
+                print(f"enrolment_validation_response: {rese}")
+                if not rese.get("status"):
+                    message = rese["message"]
+                    flash(message, "danger") #danger is a category
+                    return redirect(url_for("payref"))
+                else:
+                    name= rese["data"]["name"].title()
+                    enrolment_id = enrolment_id
+                    payment_type = "PLASCHEMA Topup"
+            except Exception as e:
+                message = str(e)
                 flash(message, "danger") #danger is a category
                 return redirect(url_for("payref"))
-            else:
-               name= rese["data"]["name"].title()
-               enrolment_id = enrolment_id
-               payment_type = "PLASCHEMA Topup"
         else:
             name = ""
             enrolment_id = ""
