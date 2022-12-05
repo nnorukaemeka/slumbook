@@ -463,7 +463,7 @@ def payref():
         enrolment_id = request.form.get('enrolment_id')  
         if enrolment_id:
             try:
-                url = f"https://pshs3.herokuapp.com/verify/enrid/{enrolment_id}"
+                url = f" https://hs3-zenbakle.koyeb.app/verify/enrid/{enrolment_id}"
                 red= requests.post(url=url)
                 rese = red.json()
                 print(f"enrolment_validation_response: {rese}")
